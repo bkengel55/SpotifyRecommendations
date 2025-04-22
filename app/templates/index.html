@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Recommendations</title>
+</head>
+<body>
+    <h1>Spotify Recommendations</h1>
+    <form id="recommendation-form">
+        <label for="user-id">Enter User ID:</label>
+        <input type="number" id="user-id" name="user_id" required>
+        <button type="submit">Get Recommendations</button>
+    </form>
+    <div id="recommendations">
+        <h2>Recommendations:</h2>
+        <ul id="recommendation-list"></ul>
+    </div>
+    <script>
+        document.getElementById("recommendation-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const userId = document.getElementById("user-id").value;
+            const response = await fetch(`/recommend?user_id=${userId}`);
+            const data = await response.json();
+            const list = document.getElementById("recommendation-list");
+            list.innerHTML = "";
+            if (data.status === "success") {
+                data.recommendations.forEach(song => {
+                    const li = document.createElement("li");
+                    li.textContent = song;
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = `<li>Error: ${data.message}</li>`;
+            }
+        });
+    </script>
+</body>
+</html>
